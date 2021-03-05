@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_meditation/deatil.dart';
 
-// 影片時間3:33
 void main() {
   //隐藏状态栏，底部按钮栏
   // SystemChrome.setEnabledSystemUIOverlays([]);
@@ -170,33 +170,43 @@ class Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * .5,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: img,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Detail(),
+          ),
+        );
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height * .5,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: img,
+          ),
         ),
-      ),
-      child: Center(
-        child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            text: headline,
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.w600,
-            ),
-            children: [
-              TextSpan(
-                text: '\n$description',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
+        child: Center(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: headline,
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w600,
               ),
-            ],
+              children: [
+                TextSpan(
+                  text: '\n$description',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
