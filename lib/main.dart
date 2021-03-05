@@ -1,117 +1,385 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+// 影片時間3:33
 void main() {
+  //隐藏状态栏，底部按钮栏
+  // SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      // debugShowCheckedModeBanner: false,
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      body: Stack(
+        children: [
+          CustomBody(),
+          CustomAppbar(),
+          NavBar(),
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+    );
+  }
+}
+
+class CustomAppbar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 105.0,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.black87,
+            Colors.transparent,
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      child: Stack(
+        children: [
+          ClipPath(
+            clipper: AppBarClipper(),
+            child: Container(
+              height: 60.0,
+              width: MediaQuery.of(context).size.width,
+              color: Color(0xffaba197),
+            ),
+          ),
+          Positioned(
+            top: 35.0,
+            left: MediaQuery.of(context).size.width / 2 - 25,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 25.0,
+                  backgroundColor: Colors.grey.shade100,
+                ),
+                CircleAvatar(
+                  radius: 23.0,
+                  backgroundImage: AssetImage("assets/face.jpg"),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 75.0,
+            left: MediaQuery.of(context).size.width / 2 - 10,
+            child: CircleAvatar(
+              radius: 10.0,
+              backgroundColor: Colors.white,
+              child: FittedBox(
+                child: Icon(
+                  Icons.add,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.wifi_tethering,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
+  }
+}
+
+class CustomBody extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Column(
+          children: [
+            Section(
+              headline: "Meditation",
+              description: "discover happiness",
+              img: AssetImage("assets/dessert.jpg"),
+            ),
+            Section(
+              headline: 'Sensations',
+              description: 'feel the moment',
+              img: AssetImage('assets/galaxy.jpg'),
+            ),
+          ],
+        ),
+        Center(
+          child: ClipPath(
+            clipper: MidClipper(),
+            child: Section(
+              headline: 'Daydream',
+              description: 'go beyond the form',
+              img: AssetImage('assets/beach.jpg'),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class Section extends StatelessWidget {
+  final String headline;
+  final String description;
+  final ImageProvider img;
+
+  const Section({
+    Key key,
+    this.headline,
+    this.description,
+    this.img,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * .5,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: img,
+        ),
+      ),
+      child: Center(
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            text: headline,
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w600,
+            ),
+            children: [
+              TextSpan(
+                text: '\n$description',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class NavBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+          bottom: 0.0,
+          child: ClipPath(
+            clipper: NavBarClipper(),
+            child: Container(
+              height: 60.0,
+              width: MediaQuery.of(context).size.width,
+              color: Color(0xff1e1e1e),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 45.0,
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              NavIcon(
+                icon: Icons.bubble_chart,
+                active: false,
+              ),
+              SizedBox(
+                width: 1.0,
+              ),
+              NavIcon(
+                icon: Icons.landscape,
+                active: true,
+              ),
+              SizedBox(
+                width: 1.0,
+              ),
+              NavIcon(
+                icon: Icons.brightness_3,
+                active: false,
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 10.0,
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                "Focus",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(
+                width: 1.0,
+              ),
+              Text(
+                "Relax",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(
+                width: 1.0,
+              ),
+              Text(
+                "Sleep",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class NavIcon extends StatelessWidget {
+  final IconData icon;
+  final bool active;
+
+  const NavIcon({
+    Key key,
+    this.icon,
+    this.active,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: 30.0,
+      backgroundColor: Color(0xff1e1e1e),
+      child: CircleAvatar(
+        radius: 25.0,
+        backgroundColor: active ? Colors.grey.shade100 : Colors.transparent,
+        child: Icon(
+          icon,
+          color: active ? Colors.black87 : Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class MidClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    var sw = size.width;
+    var sh = size.height;
+    path.cubicTo(0, sh * .3, sw, sh * .2, sw, sh * .45);
+    path.lineTo(sw, sh);
+    path.cubicTo(sw, sh * .7, 0, sh * .8, 0, sh * .55);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return false;
+  }
+}
+
+class NavBarClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    var sw = size.width;
+    var sh = size.height;
+    path.cubicTo(sw / 12, 0, sw / 12, 2 * sh / 5, 2 * sw / 12, 2 * sh / 5);
+    path.cubicTo(3 * sw / 12, 2 * sh / 5, 3 * sw / 12, 0, 4 * sw / 12, 0);
+    path.cubicTo(
+        5 * sw / 12, 0, 5 * sw / 12, 2 * sh / 5, 6 * sw / 12, 2 * sh / 5);
+    path.cubicTo(7 * sw / 12, 2 * sh / 5, 7 * sw / 12, 0, 8 * sw / 12, 0);
+    path.cubicTo(
+        9 * sw / 12, 0, 9 * sw / 12, 2 * sh / 5, 10 * sw / 12, 2 * sh / 5);
+    path.cubicTo(11 * sw / 12, 2 * sh / 5, 11 * sw / 12, 0, sw, 0);
+    path.lineTo(sw, sh);
+    path.lineTo(0, sh);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return false;
+  }
+}
+
+class AppBarClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    var sw = size.width;
+    var sh = size.height;
+
+    path.lineTo(0, sh);
+    path.lineTo(4 * sw / 12, sh);
+    path.cubicTo(5 * sw / 12, sh, 5 * sw / 12, sh / 2, 6 * sw / 12, sh / 2);
+    path.cubicTo(7 * sw / 12, sh / 2, 7 * sw / 12, sh, 8 * sw / 12, sh);
+    path.lineTo(sw, sh);
+    path.lineTo(sw, 0);
+
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return false;
   }
 }
